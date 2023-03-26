@@ -4,7 +4,7 @@
 
 # Script
 
-### Current Version: *V1.5*
+### Current Version: *V1.6*
 
 ```lua
 loadstring(game.HttpGet(game, "https://raw.githubusercontent.com/Exunys/westbound.pro-Utilites/main/Main.lua"))()
