@@ -1,9 +1,1492 @@
+--[[
+
+	westbound.pro by Exunys © CC0 1.0 Universal (2023)
+	https://github.com/Exunys
+
+]]
+
+local assert = assert
+
+assert(game.PlaceId == 2474168535, "[westbound.pro] - The game you executed the script on is not Westbound!")
+
+repeat task.wait(0) until game:IsLoaded()
+
+local getgenv, getgc, hookmetamethod, hookfunction, newcclosure, setfpscap, getconnections, getconstant, getconstants, setconstant, getinfo, isfile, printconsole = getgenv, getgc, hookmetamethod, hookfunction, newcclosure, setfpscap, getconnections, debug.getconstant, debug.getconstants, debug.setconstant, debug.getinfo, isfile, printconsole or function() end
+local getfenv, require, rawget, rawset, loadstring, select, next, unpack, tick, tostring, type, typeof, delay, wait = getfenv, require, rawget, rawset, loadstring, select, next, table.unpack, tick, tostring, type, typeof, task.delay
+local stringgsub, stringfind, stringsub, stringformat = string.gsub, string.find, string.sub, string.format
+local mathrandom = math.random
+local tablefind = table.find
+local coroutinewrap = coroutine.wrap
+local Instancenew, Color3fromRGB, Vector3new, Vector3zero, Vector2new, CFramenew, TweenInfonew, GetService, WorldToViewportPoint, GetPartsObscuringTarget, GetMouseLocation, FindFirstChild, FindFirstChildOfClass, WaitForChild, GetChildren, GetDescendants, GetPlayers, GetPlayerFromCharacter, HttpGet = Instance.new, Color3.fromRGB, Vector3.new, Vector3.zero, Vector2.new, CFrame.new, TweenInfo.new, function(...)
+	return game.GetService(game, ...)
+end
+
+local UserInputService, TeleportService, HttpService, TweenService, RunService, ReplicatedStorage, StarterGui, VirtualUser, Players, Lighting, Teams = GetService("UserInputService"), GetService("TeleportService"), GetService("HttpService"), GetService("TweenService"), GetService("RunService"), GetService("ReplicatedStorage"), GetService("StarterGui"), GetService("VirtualUser"), GetService("Players"), GetService("Lighting"), GetService("Teams")
+local Camera, LocalPlayer = workspace.CurrentCamera, Players.LocalPlayer
+
+wait = function()
+	return RunService.RenderStepped.Wait(RunService.RenderStepped)
+end
+
+WorldToViewportPoint = function(...)
+	return Camera.WorldToViewportPoint(Camera, ...)
+end
+
+GetPartsObscuringTarget = function(...)
+	return Camera.GetPartsObscuringTarget(Camera, ...)
+end
+
+GetMouseLocation = function()
+	return UserInputService:GetMouseLocation()
+end
+
+FindFirstChild = function(self, ...)
+	return self.FindFirstChild(self, ...)
+end
+
+FindFirstChildOfClass = function(self, ...)
+	return self.FindFirstChildOfClass(self, ...)
+end
+
+WaitForChild = function(self, ...)
+	return self.WaitForChild(self, ...)
+end
+
+GetChildren = function(self, ...)
+	return self.GetChildren(self, ...)
+end
+
+GetDescendants = function(self, ...)
+	return self.GetDescendants(self, ...)
+end
+
+GetPlayers = function()
+	return Players:GetPlayers()
+end
+
+GetPlayerFromCharacter = function(...)
+	return Players:GetPlayerFromCharacter(...)
+end
+
+HttpGet = function(...)
+	return game.HttpGet(game, ...)
+end
+
+if getgenv().AirTeam_westboundpro then return end
+
+getgenv().AirTeam_westboundpro = {
+	Version = "V1.6.6",
+
+	Settings = {
+		SilentAim = {
+			Enabled = false,
+			WallCheck = false,
+			HitChance = 100,
+		},
+
+		Triggerbot = {
+			Enabled = false,
+			Delay = 0
+		},
+
+		Character = {
+			AutoFarm = false,
+			AutoFarmLocation = "Tumbleweed",
+			RobRegisterAura = false,
+			AntiRagdoll = false,
+			NoFallDamage = false,
+			NoJumpCooldown = false,
+			AutoHeal = false,
+			InfiniteGallopStamina = false,
+			AutoBreakFree = false,
+			InstantContextAction = false,
+			InstantRespawn = false,
+			DisableCashNotification = false,
+			CollectCash = false
+		},
+
+		GunMods = {
+			NoSpread = false,
+			NoCooldowns = false,
+			NoRecoil = false,
+			NoFireRate = false,
+			InfiniteAmmo = false,
+			OneShot = false,
+			MaxShots = false
+		},
+
+		FOV = {
+			Enabled = false,
+			Amount = 90
+		},
+
+		Miscellaneous = {
+			FullBright = false,
+			AmbientColor = Color3fromRGB(255, 255, 255),
+			AntiAFK = false,
+			OptimizeUponUnfocus = false,
+			Fly = false,
+			FlyKeybind = Enum.KeyCode.F,
+			FlySpeed = 1,
+			NoClip = false,
+			NoClipKeybind = Enum.KeyCode.X
+		},
+
+		HitPart = "Head",
+		ToggleKeybind = Enum.KeyCode.RightShift,
+	},
+
+	Aimbot = {
+		Settings = {
+			Enabled = false,
+			WallCheck = false,
+			Sensitivity = 0, -- Animation length (in seconds) before fully locking onto target
+			ThirdPerson = false, -- Uses mousemoverel instead of CFrame to support locking in third person (could be choppy)
+			ThirdPersonSensitivity = 3,
+			TriggerKey = "MouseButton2",
+			Toggle = false,
+		},
+
+		FOVSettings = {
+			Color = Color3fromRGB(255, 255, 255),
+			LockedColor = Color3fromRGB(255, 70, 70),
+			Transparency = 0.5,
+			Sides = 60,
+			Thickness = 1,
+			Filled = false
+		}
+	},
+
+	WallHack = {
+		Settings = {
+			Enabled = false,
+			TeamCheck = false,
+			AliveCheck = true,
+			Animals = false
+		},
+
+		Visuals = {
+			ESPSettings = {
+				Enabled = true,
+				TextColor = Color3fromRGB(255, 255, 255),
+				TextSize = 14,
+				Outline = true,
+				OutlineColor = Color3fromRGB(0, 0, 0),
+				TextTransparency = 0.7,
+				TextFont = Drawing.Fonts.UI, -- UI, System, Plex, Monospace
+				DisplayDistance = true,
+				DisplayHealth = true,
+				DisplayName = true
+			},
+
+			TracersSettings = {
+				Enabled = true,
+				Type = 1, -- 1 - Bottom; 2 - Center; 3 - Mouse
+				Transparency = 0.7,
+				Thickness = 1,
+				Color = Color3fromRGB(255, 255, 255)
+			},
+
+			BoxSettings = {
+				Enabled = true,
+				Type = 1; -- 1 - 3D; 2 - 2D;
+				Color = Color3fromRGB(255, 255, 255),
+				Transparency = 0.7,
+				Thickness = 1,
+				Filled = false, -- For 2D
+				Increase = 1
+			},
+
+			HeadDotSettings = {
+				Enabled = true,
+				Color = Color3fromRGB(255, 255, 255),
+				Transparency = 0.5,
+				Thickness = 1,
+				Filled = true,
+				Sides = 30
+			}
+		},
+
+		Crosshair = {
+			Settings = {
+				Enabled = false,
+				Type = 1, -- 1 - Mouse; 2 - Center
+				Size = 12,
+				Thickness = 1,
+				Color = Color3fromRGB(0, 255, 0),
+				Transparency = 1,
+				GapSize = 5,
+				CenterDot = false,
+				CenterDotColor = Color3fromRGB(0, 255, 0),
+				CenterDotSize = 1,
+				CenterDotTransparency = 1,
+				CenterDotFilled = true,
+				CenterDotThickness = 1
+			},
+		}
+	}
+}
+
+local CharacterValues, LocationsVectors, FullBrightValues, OldLightingValues, Teleporting, Flying, NoClipping, Farming, Typing, Debounce, HealDebounce, Version, PrevHealth = {
+	WalkSpeed = 13,
+	JumpPower = 45
+}, {
+	Tumbleweed = Vector3new(-386, 12, -83),
+	StoneCreek = Vector3new(951, 21, 206),
+	Grayridge = Vector3new(1519, 120, 1591),
+	RustRidgeQuarry = Vector3new(-1659, -28, 1639),
+	FortArthur = Vector3new(-65, 72, 1267),
+	FortCassidy_SAFE = Vector3new(-1239, 160, -571),
+	RedRocksCamp_SAFE = Vector3new(1862, 104, -1827)
+}, {}, {}, false, false, false, false, false, false, false, "V1.6.5", 100
+
+local Parts, Fonts, TracersType = {"Random", "Head", "HumanoidRootPart", "LeftHand", "RightHand", "LeftLowerArm", "RightLowerArm", "LeftUpperArm", "RightUpperArm", "LeftFoot", "LeftLowerLeg", "UpperTorso", "LeftUpperLeg", "RightFoot", "RightLowerLeg", "LowerTorso", "RightUpperLeg"}, {"UI", "System", "Plex", "Monospace"}, {"Bottom", "Center", "Mouse"}
+local Mouse, RagdollScript, GeneralEvents, RagdollFunction, OldRecoilFunction, Notification = LocalPlayer:GetMouse(), require(ReplicatedStorage.SharedModules.Ragdoll), ReplicatedStorage.GeneralEvents
+RagdollFunction = RagdollScript.EnableRagdoll
+
+if not LocalPlayer.Character then
+	StarterGui:SetCore("SendNotification", {
+		Title = "westbound.pro",
+		Text = "Waiting for character to load...",
+		Duration = 1 / 0,
+		Icon = "rbxassetid://6238537240",
+		Button1 = "OK"
+	})
+end
+
+repeat wait() until LocalPlayer.Character and FindFirstChildOfClass(LocalPlayer.Character, "Humanoid")
+
+local Tick = tick()
+
+local ConfigLibrary = loadstring(HttpGet("https://raw.githubusercontent.com/Exunys/Config-Library/main/Main.lua"))()
+loadstring(HttpGet("https://raw.githubusercontent.com/Exunys/westbound.pro-Utilites/main/Aimbot.lua"))()
+loadstring(HttpGet("https://raw.githubusercontent.com/Exunys/westbound.pro-Utilites/main/WallHack.lua"))()
+
+printconsole(stringformat("[westbound.pro %s] - Fetching script configuration...", Version), 100, 100, 200)
+
+if not isfile("AirTeam/westbound.pro/Config.json") then
+	printconsole(stringformat("[westbound.pro %s] - Failed to find the configuration! Creating a new one...", Version), 200, 50, 50)
+	ConfigLibrary:SaveConfig("AirTeam/westbound.pro/Config.json", getgenv().AirTeam_westboundpro)
+end
+
+local Config = ConfigLibrary:LoadConfig("AirTeam/westbound.pro/Config.json")
+
+if Config.Version and Config.Version == Version then
+	getgenv().AirTeam_westboundpro = Config
+	printconsole(stringformat("[westbound.pro %s] - Loaded configuration!", Version), 100, 200, 100)
+else
+	printconsole(stringformat("[westbound.pro %s] - Configuration version (%s) outdated! Deleting and creating a new configuration...", Version, Config.Version or "N/A"), 0, 200, 200)
+	delfile("AirTeam/westbound.pro/Config.json")
+	ConfigLibrary:SaveConfig("AirTeam/westbound.pro/Config.json", getgenv().AirTeam_westboundpro)
+end
+
+local Settings, Aimbot, WallHack, OldNamecall, OldNewIndex, OldIndex = getgenv().AirTeam_westboundpro.Settings, getgenv().AirTeam_westboundpro.Aimbot, getgenv().AirTeam_westboundpro.WallHack
+
+FullBrightValues = {
+	FogColor = Settings.Miscellaneous.AmbientColor,
+	FogEnd = 1 / 0,
+	FogStart = 1 / 0,
+	Ambient = Settings.Miscellaneous.AmbientColor,
+	Brightness = 5,
+	ColorShift_Bottom = Settings.Miscellaneous.AmbientColor,
+	ColorShift_Top = Settings.Miscellaneous.AmbientColor,
+	OutdoorAmbient = Settings.Miscellaneous.AmbientColor,
+	Outlines = true
+}
+
+local CoreFunctions = {
+	GetClosestPlayer = function()
+		local HitPart, RequiredDistance, Target = Settings.HitPart == "Random" and Parts[mathrandom(2, #Parts)] or Settings.HitPart, Settings.FOV.Enabled and Settings.FOV.Amount or 2000
+
+		for _, v in next, GetPlayers() do
+			if v ~= LocalPlayer and v.Character and FindFirstChild(v.Character, Settings.HitPart) and FindFirstChildOfClass(v.Character, "Humanoid") then
+				if FindFirstChildOfClass(v.Character, "ForceField") then continue end
+				if FindFirstChildOfClass(v.Character, "Humanoid").Health <= 0 then continue end
+				if LocalPlayer.Team == Teams.Cowboys and v.TeamColor == LocalPlayer.TeamColor then continue end
+				if Settings.SilentAim.WallCheck and #(GetPartsObscuringTarget({v.Character[HitPart].Position}, GetDescendants(v.Character))) > 0 then continue end
+
+				local Vector, OnScreen = WorldToViewportPoint(v.Character[HitPart].Position); Vector = Vector2new(Vector.X, Vector.Y)
+				local Distance = (GetMouseLocation() - Vector).Magnitude
+
+				if Distance < RequiredDistance and OnScreen then
+					RequiredDistance = Distance
+					Target = v
+				end
+			end
+		end
+
+		return Target
+	end,
+
+	GetClosestCashRegister = function()
+		local RequiredDistance, Target = 10
+
+		for _, v in next, GetChildren(workspace) do
+			if v.ClassName == "Model" and v.Name == "CashRegister" then
+				local Distance = (LocalPlayer.Character.PrimaryPart.Position - v.Union.Position).Magnitude
+
+				Target = Distance < RequiredDistance and v or Target
+				RequiredDistance = Distance < RequiredDistance and Distance or RequiredDistance
+			end
+		end
+
+		return Target
+	end,
+
+	Teleport = function(Location, AutoFarm)
+		if Teleporting --[[or Settings.Character.AutoFarm and not AutoFarm]] then return end
+
+		local PrimaryPart = LocalPlayer.Character.PrimaryPart; Teleporting = true
+
+		repeat wait() until PrimaryPart.Position
+
+		local Animation = TweenService:Create(PrimaryPart, TweenInfonew((PrimaryPart.Position - Location).Magnitude / 150, Enum.EasingStyle.Linear, Enum.EasingDirection.Out), {CFrame = CFramenew(Location)})
+		Animation:Play(); Animation.Completed:Connect(function()
+			Teleporting = false; wait(); return true
+		end)
+	end,
+
+	SeparateUpper = function(Value)
+		return stringgsub(Value, "(%l)(%u)", function(...)
+			return select(1, ...).." "..select(2, ...)
+		end)
+	end
+}
+
+local Functions = {
+	ModGuns = function()
+		for _, v in next, getgc(true) do
+			if type(v) == "table" and rawget(v, "Shots") then
+				if Settings.GunMods.InfiniteAmmo then
+					rawset(v, "Shots", v.GunStats.MaxShots)
+					v.AmmoVal.Clip.Value = v.GunStats.MaxShots
+					rawset(v, "TotalAmmoClient", LocalPlayer.Stats.AmmoCapacityLevel.CurrentAmount.Value)
+				end
+
+				if Settings.GunMods.ShotgunOneShot then
+					rawset(v.GunStats, "BulletCount", v.GunStats.MaxShots)
+				end
+
+				if Settings.GunMods.NoSpread then
+					rawset(v.GunStats, "ZoomAccuracy", 0)
+					rawset(v.GunStats, "HipFireAccuracy", 0)
+					rawset(v.GunStats, "FiringOffset", CFramenew(Vector3zero, Vector3zero, Vector3zero))
+				end
+
+				if Settings.GunMods.NoCooldowns then
+					rawset(v.GunStats, "ReloadSpeed", 0)
+					rawset(v.GunStats, "equipSpeed", 0)
+					rawset(v.GunStats, "EquipDelay", 0)
+					rawset(v.GunStats, "ReloadAnimationSpeed", 0)
+					rawset(v.GunStats, "InstantFireAnimation", true)
+					rawset(v.GunStats, "prepSpeed", 0)
+					rawset(v.GunStats, "ZoomFOVSpeed", 0)
+					rawset(v, "reloadManual", false)
+				end
+
+				if Settings.GunMods.MaxShots then
+					rawset(v.GunStats, "MaxShots", rawget(v, "TotalAmmoClient"))
+				end
+
+				OldRecoilFunction = getconstant(v.shakeCam, 1) ~= "RECOIL OFF" and v.shakeCam or OldRecoilFunction
+
+				rawset(v, "shakeCam", Settings.GunMods.NoRecoil and function() local _ = "RECOIL OFF" end or OldRecoilFunction)
+
+				if Settings.GunMods.NoFireRate then
+					rawset(v, "shotDebounce", false)
+					rawset(v, "Delay", 0)
+				end
+			end
+		end
+	end,
+
+	ChangeWalkSpeed = function(Value)
+		for _, v in next, getgc(true) do
+			if type(v) == "table" then
+				if rawget(v, "GunOutRunSpeed") then
+					if Value == 13 then
+						rawset(v, "RunSpeed", 30)
+						rawset(v, "GunOutRunSpeed", 26)
+						rawset(v, "WalkSpeed", 13)
+						rawset(v, "ZoomSpeed", 13)
+					else
+						rawset(v, "RunSpeed", Value * 2.3)
+						rawset(v, "GunOutRunSpeed", Value * 2)
+						rawset(v, "WalkSpeed", Value)
+						rawset(v, "ZoomSpeed", Value)
+					end
+				end
+			end
+		end
+
+		CharacterValues.WalkSpeed = Value
+		LocalPlayer.Character.Humanoid.WalkSpeed = Value
+	end,
+
+	ChangeJumpPower = function(Value)
+		CharacterValues.JumpPower = Value
+		LocalPlayer.Character.Humanoid.JumpPower = Value
+	end,
+
+	Respawn = function()
+		GeneralEvents.Spawn:FireServer(nil, LocalPlayer.Team == Teams.Outlaws)
+	end,
+
+	RagdollCallback = function(Value)
+		Settings.Character.AntiRagdoll = Value and Value or Settings.Character.AntiRagdoll
+
+		if Settings.Character.AntiRagdoll or Farming then
+			hookfunction(RagdollScript.EnableRagdoll, function() end)
+		else
+			hookfunction(RagdollScript.EnableRagdoll, RagdollFunction)
+		end
+	end,
+
+	EditJumpingStamina = function()
+		repeat wait() until FindFirstChildOfClass(LocalPlayer.Character, "Humanoid")
+
+		for _, v in next, getconnections(LocalPlayer.Character.Humanoid.Jumping) do
+			if #getconstants(v.Function) == 15 and (getconstant(v.Function, 8) == 1.4 or getconstant(v.Function, 8) == 0.1) then
+				setconstant(v.Function, 8, (Settings.Character.NoJumpCooldown or CharacterValues.JumpPower > 45) and 0.1 or 1.4)
+			end
+		end
+	end,
+
+	Fly = function()
+		if not Settings.Miscellaneous.Fly then return end
+
+		repeat wait() until LocalPlayer.Character and FindFirstChild(LocalPlayer.Character, "HumanoidRootPart") and FindFirstChildOfClass(LocalPlayer.Character, "Humanoid")
+
+		local Control, LocalControl, Speed = {F = 0, B = 0, L = 0, R = 0}, {F = 0, B = 0, L = 0, R = 0}, 0
+		local BG, BV = Instancenew("BodyGyro", LocalPlayer.Character.HumanoidRootPart), Instancenew("BodyVelocity", LocalPlayer.Character.HumanoidRootPart)
+
+		BG.P = 9e4
+		BG.MaxTorque = Vector3new(9e9, 9e9, 9e9)
+		BG.CFrame = LocalPlayer.Character.HumanoidRootPart.CFrame
+
+		BV.Velocity = Vector3new(0, 0.1, 0)
+		BV.MaxForce = Vector3new(9e9, 9e9, 9e9)
+
+		coroutinewrap(function()
+			repeat
+				wait(); LocalPlayer.Character.Humanoid.PlatformStand = true
+
+				if Control.L + Control.R ~= 0 or Control.F + Control.B ~= 0 then
+					Speed = 50
+				elseif not (Control.L + Control.R ~= 0 or Control.F + Control.B ~= 0) and Speed ~= 0 then
+					Speed = 0
+				end
+
+				if (Control.L + Control.R) ~= 0 or (Control.F + Control.B) ~= 0 then
+					BV.Velocity = ((Camera.CFrame.LookVector * (Control.F + Control.B)) + ((Camera.CFrame * CFramenew(Control.L + Control.R, (Control.F + Control.B) * 0.2, 0).p) - Camera.CFrame.Position)) * Speed
+					LocalControl = {F = Control.F, B = Control.B, L = Control.L, R = Control.R}
+				elseif (Control.L + Control.R) == 0 and (Control.F + Control.B) == 0 and Speed ~= 0 then
+					BV.Velocity = ((Camera.CFrame.LookVector * (LocalControl.F + LocalControl.B)) + ((Camera.CFrame * CFramenew(LocalControl.L + LocalControl.R, (LocalControl.F + LocalControl.B) * 0.2, 0).p) - Camera.CFrame.Position)) * Speed
+				else
+					BV.Velocity = Vector3new(0, 0.1, 0)
+				end
+
+				BG.CFrame = Camera.CFrame
+			until not Flying
+
+			Control, LocalControl, Speed = {F = 0, B = 0, L = 0, R = 0}, {F = 0, B = 0, L = 0, R = 0}, 0
+
+			BG:Destroy()
+			BV:Destroy()
+
+			LocalPlayer.Character.Humanoid.PlatformStand = false
+		end)()
+
+		UserInputService.InputBegan:Connect(function(Input)
+			if not Typing then
+				if Input.KeyCode == Enum.KeyCode.W then
+					Control.F = Settings.Miscellaneous.FlySpeed
+				elseif Input.KeyCode == Enum.KeyCode.S then
+					Control.B = -Settings.Miscellaneous.FlySpeed
+				elseif Input.KeyCode == Enum.KeyCode.A then
+					Control.L = -Settings.Miscellaneous.FlySpeed
+				elseif Input.KeyCode == Enum.KeyCode.D then
+					Control.R = Settings.Miscellaneous.FlySpeed
+				end
+			end
+		end)
+
+		UserInputService.InputEnded:Connect(function(Input)
+			if not Typing then
+				if Input.KeyCode == Enum.KeyCode.W then
+					Control.F = 0
+				elseif Input.KeyCode == Enum.KeyCode.S then
+					Control.B = 0
+				elseif Input.KeyCode == Enum.KeyCode.A then
+					Control.L = 0
+				elseif Input.KeyCode == Enum.KeyCode.D then
+					Control.R = 0
+				end
+			end
+		end)
+	end,
+
+	NoClip = function()
+		UserInputService.InputBegan:Connect(function(Input)
+			if Input.KeyCode == Settings.NoClipKeybind and not Typing and Settings.Miscellaneous.NoClip then
+				NoClipping = not NoClipping
+			end
+		end)
+
+		RunService.RenderStepped:Connect(function()
+			if NoClipping and Settings.Miscellaneous.NoClip then
+				if LocalPlayer.Character and FindFirstChildOfClass(LocalPlayer.Character, "Humanoid") then
+					for _, v in next, Parts do
+						if not v == "Random" then
+							LocalPlayer.Character[v].CanCollide = false
+						end
+					end
+				end
+			end
+		end)
+	end,
+
+	FullBrightCallback = function(Value)
+		Settings.Miscellaneous.FullBright = Value
+
+		for i, v in next, Settings.Miscellaneous.FullBright and FullBrightValues or OldLightingValues do
+			Lighting[i] = v
+		end
+	end,
+
+	AutoFarm = function(self)
+		if not Farming and Settings.Character.AutoFarm and LocalPlayer.Character and not Teleporting then
+			Farming = true; self.RagdollCallback(); CoreFunctions.Teleport(Settings.Character.AutoFarmLocation == "Grayridge" and Vector3new(1478, 133, 1658) or Settings.Character.AutoFarmLocation == "Tumbleweed" and Vector3new(-326, 14, -10), true)
+
+			repeat wait() until Settings.Character.AutoFarm and not Teleporting and LocalPlayer.Character and Farming
+
+			repeat
+				wait(); local ClosestRegister = CoreFunctions.GetClosestCashRegister(); GeneralEvents.Rob:FireServer("Register", {
+					ActiveValue = ClosestRegister.Active,
+					Active = true,
+					Part = ClosestRegister.Union,
+					OpenPart = ClosestRegister.Open
+				})
+			until LocalPlayer.States.Bag.Value == LocalPlayer.Stats.BagSizeLevel.CurrentAmount.Value and Settings.Character.AutoFarm and LocalPlayer.Character and Farming
+
+			CoreFunctions.Teleport(Settings.Character.AutoFarmLocation == "Grayridge" and LocationsVectors.FortArthur or Settings.Character.AutoFarmLocation == "Tumbleweed" and LocationsVectors.FortCassidy_SAFE, true)
+
+			repeat wait() until LocalPlayer.States.Bag.Value == 0 and Settings.Character.AutoFarm and not Teleporting and LocalPlayer.Character and Farming
+
+			Farming = false; self.RagdollCallback()
+		end
+	end,
+
+	AutoFarm_Remote = function()
+		if not Settings.Character.AutoFarm then return end
+
+		ReplicatedStorage.Quests.Events.QuestEvent:FireServer({
+			QuestType = "Tutorial",
+			Action = "QuestsActiveChanged",
+			Active = true
+		})
+
+		ReplicatedStorage.Quests.Events.QuestEvent:FireServer({
+			Action = "Activate",
+			QuestName = "Kill an outlaw and collect the bounty",
+			QuestId = 1030,
+			QuestType = "Tutorial"
+		})
+
+		ReplicatedStorage.Quests.Events.QuestFunction:InvokeServer({
+			Action = "ClearActiveQuest",
+			QuestName = "Kill an outlaw and collect the bounty",
+			QuestId = 1030,
+			QuestType = "Tutorial"
+		})
+	end,
+
+	RobRegisterAura = function()
+		if not Settings.Character.RobRegisterAura then return end
+		if LocalPlayer.States.Bag.Value == LocalPlayer.Stats.BagSizeLevel.CurrentAmount.Value then return end
+
+		local ClosestRegister = CoreFunctions.GetClosestCashRegister()
+
+		if ClosestRegister then
+			GeneralEvents.Rob:FireServer("Register", {
+				ActiveValue = ClosestRegister.Active,
+				Active = true,
+				Part = ClosestRegister.Union,
+				OpenPart = ClosestRegister.Open
+			})
+		end
+	end,
+
+	Triggerbot = function()
+		if Settings.Triggerbot.Enabled and Mouse.Target and FindFirstChildOfClass(Mouse.Target.Parent, "Humanoid") and GetPlayerFromCharacter(Mouse.Target.Parent) and FindFirstChildOfClass(LocalPlayer.Character, "Tool") then
+			if Settings.Triggerbot.Delay / 100 ~= 0 then
+				task.wait(Settings.Triggerbot.Delay / 100)
+			end
+
+			mouse1press(); task.wait(0); mouse1release()
+		end
+	end,
+
+	OnCharacter = function(self, Character)
+		delay(1, function()
+			if Debounce then return end; Debounce = true
+
+			Character = Character or WaitForChild(LocalPlayer.Character, "Humanoid").Parent
+
+			for _, v in next, getgc() do
+				if type(v) == "function" and getfenv(v).script then
+					if getfenv(v).script.Name == "GunLocalModule" and Settings.SilentAim.Enabled then
+						if getinfo(v).name == "shootBullet" then
+							local function SilentAim(Arguments)
+								local ClosestPlayer = CoreFunctions.GetClosestPlayer()
+
+								if ClosestPlayer and Settings.SilentAim.Enabled and (100 * mathrandom()) < Settings.SilentAim.HitChance then
+									Arguments[1].GunStats.FiringOffset = CFramenew(Vector3zero, Vector3zero, Vector3zero)
+									Arguments[3] = ClosestPlayer.Character[Settings.HitPart].Position
+								end
+
+								return unpack(Arguments)
+							end
+
+							local Old; Old = hookfunction(v, function(...)
+								Old(SilentAim({...}))
+							end)
+						end
+					else
+						if getinfo(v).name == "SetUpContextHoldGui" and Settings.Character.AutoBreakFree then
+							local Old; Old = hookfunction(v, function(...)
+								if ({...}).Title == "Struggle" and Settings.Character.AutoBreakFree then
+									GeneralEvents.LassoEvents:FireServer("BreakFree")
+								else
+									Old(...)
+								end
+							end)
+						elseif getinfo(v).name == "ContextHoldFunc" and Settings.Character.InstantContextAction then
+							local Old; Old = hookfunction(v, function(...)
+								local Arguments = {...}; Arguments[#Arguments] = Settings.Character.InstantContextAction and 0 or Arguments[#Arguments]
+
+								Old(unpack(Arguments))
+							end)
+						end
+					end
+				end
+			end
+
+			delay(0.5, self.EditJumpingStamina)
+
+			delay(1, function()
+				self.ChangeWalkSpeed(CharacterValues.WalkSpeed)
+				self.ChangeJumpPower(CharacterValues.JumpPower)
+			end)
+
+			wait(); WaitForChild(Character, "Humanoid", 1 / 0).Died:Connect(function()
+				Flying, Farming, Teleporting = false, false, false
+
+				if Settings.Character.InstantRespawn or Settings.Character.AutoFarm then
+					self.Respawn()
+				end
+			end)
+
+			PrevHealth = WaitForChild(Character, "Humanoid", 1 / 0).Health
+
+			WaitForChild(Character, "Humanoid", 1 / 0).Changed:Connect(function()
+				local _Character = LocalPlayer.Character
+				local Humanoid = FindFirstChildOfClass(_Character, "Humanoid")
+
+				if _Character and Humanoid and Humanoid.Health < PrevHealth and Humanoid.Health <= 30 and Humanoid.Health > 0 and Settings.Character.AutoHeal and not HealDebounce then
+					PrevHealth, HealDebounce = LocalPlayer.Character.Humanoid.Health, true
+
+					if LocalPlayer.Consumables["Health Potion"].Value > 0 then
+						local Potion = LocalPlayer.Backpack["Health Potion"] or LocalPlayer.Character["Health Potion"]
+
+						if Potion then
+							Potion.DrinkPotion:InvokeServer()
+
+							StarterGui:SetCore("SendNotification", {
+								Title = "westbound.pro",
+								Text = stringformat("Used health potion, potions left: %s.", tostring(LocalPlayer.Consumables["Health Potion"].Value)),
+								Duration = 3,
+								Icon = "rbxassetid://6238537240",
+							})
+						else
+							StarterGui:SetCore("SendNotification", {
+								Title = "westbound.pro",
+								Text = "Unable to find potion!",
+								Duration = 3,
+								Icon = "rbxassetid://6238553573",
+							})
+						end
+					else
+						StarterGui:SetCore("SendNotification", {
+							Title = "westbound.pro",
+							Text = "You are out of health potions!",
+							Duration = 3,
+							Icon = "rbxassetid://6238540373",
+						})
+					end
+
+					task.wait(1); HealDebounce, PrevHealth = false, Humanoid.Health or 0
+				end
+			end)
+
+			task.wait(5); Debounce = false
+		end)
+	end
+}
+
+OldNamecall, OldNewIndex, OldIndex = hookmetamethod(game, "__namecall", newcclosure(function(...)
+	local NamecallMethod, Self, Arguments = getnamecallmethod(), ..., {select(2, ...)}
+
+	if not checkcaller() then
+		if NamecallMethod == "FireServer" then
+			if Self.Name == "GunShot" then
+				Functions.ModGuns()
+			elseif Self.Name == "ChangeCharacter" then
+				if Arguments[1] == "Damage" then
+					Arguments[2] = Settings.Character.NoFallDamage and 0 or Teleporting and 0 or Farming and 0 or Flying and 0 or Arguments[2]
+
+					return Self.FireServer(Self, unpack(Arguments))
+				elseif Arguments[1] == "Ragdoll" and (Settings.Character.AntiRagdoll or Teleporting or Farming or Flying) then
+					return nil
+				end
+			end
+		elseif NamecallMethod == "SetStateEnabled" then
+			if Self == LocalPlayer.Character.Humanoid then
+				if Arguments[1] == Enum.HumanoidStateType.Jumping and Arguments[2] == false then
+					Arguments[2] = Settings.Character.NoJumpCooldown and true or false
+
+					return Self.SetStateEnabled(Self, unpack(Arguments))
+				end
+			end
+		elseif NamecallMethod == "Clone" then
+			if Self.Name == "Cash" and Self.ClassName == "TextLabel" and Settings.Character.DisableCashNotification then
+				return nil
+			end
+		end
+	end
+
+	return OldNamecall(...)
+end)), hookmetamethod(game, "__newindex", function(...)
+	local Self, Key, Value = ...
+
+	if not checkcaller() then
+		if tostring(Self) == "Humanoid" and Key == "JumpPower" and Value ~= CharacterValues.JumpPower and CharacterValues.JumpPower > 45 then
+			Self[Key] = CharacterValues.JumpPower
+		end
+	end
+
+	return OldNewIndex(...)
+end)--[[, hookmetamethod(workspace.Horses, "__index", function(...)
+	local Self, Key = ...
+
+	if not checkcaller() and tostring(Self) == "CurrentStamina" and Key == "Value" and Settings.Character.InfiniteGallopStamina then
+		return 400
+	end
+
+	return OldIndex(...)
+end)]]
+
+local OldPrint = nil; OldPrint = hookfunction(print, function(...)
+	if select("#", ...) == 1 and ... == "dino was here :)" then
+		return nil
+	end
+
+	return OldPrint(...)
+end)
+
+local Library, ColorPallete = loadstring(HttpGet("https://raw.githubusercontent.com/Exunys/westbound.pro-Utilites/main/UI%20Library.lua"))().new(stringformat("westbound.pro [%s]", Version)), {
+	Background = Color3fromRGB(10, 20, 30),
+	Glow = Color3fromRGB(100, 180, 230),
+	Accent = Color3fromRGB(15, 30, 45),
+	LightContrast = Color3fromRGB(30, 45, 60),
+	DarkContrast = Color3fromRGB(20, 30, 40),
+	TextColor = Color3fromRGB(170, 250, 255)
+}
+
+local Combat = Library:addPage("Combat", 12412925815)
+local Combat_General, Combat_SilentAim, --[[Combat_Triggerbot,]] Combat_Aimbot, Combat_GunMods = Combat:addSection("General"), Combat:addSection("Silent Aim"), --[[Combat:addSection("Triggerbot"),]] Combat:addSection("Aimbot"), Combat:addSection("Gun Mods")
+
+for i, v in next, ColorPallete do
+	Library:setTheme(i, v)
+end
+
+Combat_General:addToggle("FOV Enabled", Settings.FOV.Enabled, function(Value)
+	Settings.FOV.Enabled = Value
+end)
+
+Combat_General:addSlider("Field Of View", Settings.FOV.Amount, 10, 600, function(Value)
+	Settings.FOV.Amount = Value
+end)
+
+Combat_General:addDropdown("Hit Part ("..Settings.HitPart..")", Parts, function(Value)
+	Settings.HitPart = Value
+end)
+
+Combat_SilentAim:addToggle("Enabled", Settings.SilentAim.Enabled, function(Value)
+	Settings.SilentAim.Enabled = Value; Functions:OnCharacter()
+end)
+
+Combat_SilentAim:addToggle("Wall Check", Settings.SilentAim.WallCheck, function(Value)
+	Settings.SilentAim.WallCheck = Value
+end)
+
+Combat_SilentAim:addSlider("Hit Chance", Settings.SilentAim.HitChance, 1, 100, function(Value)
+	Settings.SilentAim.HitChance = Value
+end)
+
+--[[
+Combat_Triggerbot:addToggle("Enabled", Settings.Triggerbot.Enabled, function(Value)
+	Settings.Triggerbot.Enabled = Value
+end)
+
+Combat_Triggerbot:addSlider("Delay (ms)", Settings.Triggerbot.Delay, 0, 100, function(Value)
+	Settings.Triggerbot.Delay = Value
+end)
+]]
+
+Combat_Aimbot:addToggle("Enabled", Aimbot.Settings.Enabled, function(Value)
+	Aimbot.Settings.Enabled = Value
+end)
+
+Combat_Aimbot:addToggle("Wall Check", Aimbot.Settings.WallCheck, function(Value)
+	Aimbot.Settings.WallCheck = Value
+end)
+
+Combat_Aimbot:addToggle("Toggle", Aimbot.Settings.Toggle, function(Value)
+	Aimbot.Settings.Toggle = Value
+end)
+
+Combat_Aimbot:addSlider("Sensitivity", Aimbot.Settings.Sensitivity * 100, 0, 100, function(Value)
+	Aimbot.Settings.Sensitivity = Value / 100
+end)
+
+Combat_Aimbot:addToggle("Third Person", Aimbot.Settings.ThirdPerson, function(Value)
+	Aimbot.Settings.ThirdPerson = Value
+end)
+
+Combat_Aimbot:addSlider("Third Person Sensitivity", Aimbot.Settings.ThirdPersonSensitivity * 10, 1, 50, function(Value)
+	Aimbot.Settings.ThirdPersonSensitivity = Value / 10
+end)
+
+Combat_Aimbot:addTextbox("Hotkey", Aimbot.Settings.TriggerKey, function(Value)
+	Aimbot.Settings.TriggerKey = Value
+end)
+
+Combat_Aimbot:addToggle("FOV Circle Filled", Aimbot.FOVSettings.Filled, function(Value)
+	Aimbot.FOVSettings.Filled = Value
+end)
+
+Combat_Aimbot:addSlider("FOV Circle Transparency", Aimbot.FOVSettings.Transparency * 100, 1, 100, function(Value)
+	Aimbot.FOVSettings.Transparency = Value / 100
+end)
+
+Combat_Aimbot:addSlider("FOV Circle Sides", Aimbot.FOVSettings.Sides, 3, 60, function(Value)
+	Aimbot.FOVSettings.Sides = Value
+end)
+
+Combat_Aimbot:addSlider("FOV Circle Thickness", Aimbot.FOVSettings.Thickness, 1, 5, function(Value)
+	Aimbot.FOVSettings.Thickness = Value
+end)
+
+Combat_Aimbot:addColorPicker("FOV Circle Color", Aimbot.FOVSettings.Color, function(Value)
+	Aimbot.FOVSettings.Color = Value
+end)
+
+Combat_Aimbot:addColorPicker("FOV Circle Locked Color", Aimbot.FOVSettings.LockedColor, function(Value)
+	Aimbot.FOVSettings.LockedColor = Value
+end)
+
+for i, v in next, Settings.GunMods do
+	Combat_GunMods:addToggle(i == "InfiniteAmmo" and "Infinite Ammo (PATCHED)" or CoreFunctions.SeparateUpper(i), v, function(Value)
+		Settings.GunMods[i] = Value
+	end)
+end
+
+Library:SelectPage(Combat, true)
+
+local Visuals = Library:addPage("Visuals", 12433857701)
+local Visuals_General, Visuals_ESP, Visuals_Tracers, Visuals_Boxes, Visuals_HeadDots, Visuals_Crosshair = Visuals:addSection("General"), Visuals:addSection("ESP"), Visuals:addSection("Tracers"), Visuals:addSection("Boxes"), Visuals:addSection("Head Dots"), Visuals:addSection("Crosshair")
+
+for i, v in next, WallHack.Settings do
+	Visuals_General:addToggle(CoreFunctions.SeparateUpper(i), v, function(Value)
+		WallHack.Settings[i] = Value
+	end)
+end
+
+for i, v in next, WallHack.Visuals.ESPSettings do
+	if i == "TextFont" then continue end
+
+	if typeof(v) == "boolean" then
+		Visuals_ESP:addToggle(CoreFunctions.SeparateUpper(i), v, function(Value)
+			WallHack.Visuals.ESPSettings[i] = Value
+		end)
+	elseif typeof(v) == "Color3" then
+		Visuals_ESP:addColorPicker(CoreFunctions.SeparateUpper(i), v, function(Value)
+			WallHack.Visuals.ESPSettings[i] = Value
+		end)
+	elseif typeof(v) == "number" then
+		Visuals_ESP:addSlider(CoreFunctions.SeparateUpper(i), v < 1 and v * 100 or v, v < 1 and 1 or 8, v < 1 and 100 or 24, function(Value)
+			WallHack.Visuals.ESPSettings[i] = v < 1 and Value / 100 or Value
+		end)
+	end
+end
+
+Visuals_ESP:addDropdown("Text Font (UI)", Fonts, function(Value)
+	WallHack.Visuals.ESPSettings.TextFont = Drawing.Fonts[Value]
+end)
+
+for i, v in next, WallHack.Visuals.TracersSettings do
+	if i == "Type" then continue end
+
+	if typeof(v) == "boolean" then
+		Visuals_Tracers:addToggle(CoreFunctions.SeparateUpper(i), v, function(Value)
+			WallHack.Visuals.TracersSettings[i] = Value
+		end)
+	elseif typeof(v) == "Color3" then
+		Visuals_Tracers:addColorPicker(CoreFunctions.SeparateUpper(i), v, function(Value)
+			WallHack.Visuals.TracersSettings[i] = Value
+		end)
+	elseif typeof(v) == "number" then
+		Visuals_Tracers:addSlider(CoreFunctions.SeparateUpper(i), v < 1 and v * 100 or v, v < 1 and 1 or 1, v < 1 and 100 or 5, function(Value)
+			WallHack.Visuals.TracersSettings[i] = v < 1 and Value / 100 or Value
+		end)
+	end
+end
+
+Visuals_Tracers:addDropdown("Start From (Bottom)", TracersType, function(Value)
+	WallHack.Visuals.TracersSettings.Type = tablefind(TracersType, Value)
+end)
+
+for i, v in next, WallHack.Visuals.BoxSettings do
+	if i == "Type" then continue end
+
+	if typeof(v) == "boolean" then
+		Visuals_Boxes:addToggle(CoreFunctions.SeparateUpper(i), v, function(Value)
+			WallHack.Visuals.BoxSettings[i] = Value
+		end)
+	elseif typeof(v) == "Color3" then
+		Visuals_Boxes:addColorPicker(CoreFunctions.SeparateUpper(i), v, function(Value)
+			WallHack.Visuals.BoxSettings[i] = Value
+		end)
+	elseif typeof(v) == "number" then
+		Visuals_Boxes:addSlider(CoreFunctions.SeparateUpper(i), v < 1 and v * 100 or v, v < 1 and 1 or 1, v < 1 and 100 or 5, function(Value)
+			WallHack.Visuals.BoxSettings[i] = v < 1 and Value / 100 or Value
+		end)
+	end
+end
+
+Visuals_Boxes:addDropdown("Box Type ("..WallHack.Visuals.BoxSettings.Type == 1 and "3D" or "2D"..")", {"3D", "2D"}, function(Value)
+	WallHack.Visuals.BoxSettings.Type = Value == "3D" and 1 or Value == "2D" and 2
+end)
+
+for i, v in next, WallHack.Visuals.HeadDotSettings do
+	if i == "Type" then continue end
+
+	if typeof(v) == "boolean" then
+		Visuals_HeadDots:addToggle(CoreFunctions.SeparateUpper(i), v, function(Value)
+			WallHack.Visuals.HeadDotSettings[i] = Value
+		end)
+	elseif typeof(v) == "Color3" then
+		Visuals_HeadDots:addColorPicker(CoreFunctions.SeparateUpper(i), v, function(Value)
+			WallHack.Visuals.HeadDotSettings[i] = Value
+		end)
+	elseif typeof(v) == "number" and i ~= "Sides" then
+		Visuals_HeadDots:addSlider(CoreFunctions.SeparateUpper(i), v < 1 and v * 100 or v, v < 1 and 1 or 1, v < 1 and 100 or 5, function(Value)
+			WallHack.Visuals.HeadDotSettings[i] = v < 1 and Value / 100 or Value
+		end)
+	end
+end
+
+Visuals_HeadDots:addSlider("Sides", WallHack.Visuals.HeadDotSettings.Sides, 3, 30, function(Value)
+	WallHack.Visuals.HeadDotSettings.Sides = Value
+end)
+
+for i, v in next, WallHack.Crosshair.Settings do
+	if i == "Type" then continue end
+
+	if typeof(v) == "boolean" then
+		Visuals_Crosshair:addToggle(CoreFunctions.SeparateUpper(i), v, function(Value)
+			WallHack.Crosshair.Settings[i] = Value
+		end)
+	elseif typeof(v) == "Color3" then
+		Visuals_Crosshair:addColorPicker(CoreFunctions.SeparateUpper(i), v, function(Value)
+			WallHack.Crosshair.Settings[i] = Value
+		end)
+	elseif typeof(v) == "number" then
+		if stringfind(i, "Transparency") then
+			Visuals_Crosshair:addSlider(CoreFunctions.SeparateUpper(i), v * 100, 1, 100, function(Value)
+				WallHack.Crosshair.Settings[i] = Value / 100
+			end)
+		elseif i == "Size" then
+			Visuals_Crosshair:addSlider(CoreFunctions.SeparateUpper(i), v, 8, 24, function(Value)
+				WallHack.Crosshair.Settings[i] = Value
+			end)
+		elseif i == "GapSize" then
+			Visuals_Crosshair:addSlider(CoreFunctions.SeparateUpper(i), v, 0, 20, function(Value)
+				WallHack.Crosshair.Settings[i] = Value
+			end)
+		elseif i == "CenterDotSize" then
+			Visuals_Crosshair:addSlider(CoreFunctions.SeparateUpper(i), v, 1, 6, function(Value)
+				WallHack.Crosshair.Settings[i] = Value
+			end)
+		elseif stringfind(i, "Thickness") then
+			Visuals_Crosshair:addSlider(CoreFunctions.SeparateUpper(i), v, 1, 5, function(Value)
+				WallHack.Crosshair.Settings[i] = Value
+			end)
+		end
+	end
+end
+
+Visuals_Crosshair:addDropdown("Position ("..WallHack.Crosshair.Settings.Type == 1 and "Mouse" or "Center"..")", {"Mouse", "Center"}, function(Value)
+	WallHack.Crosshair.Settings.Type = Value == "Mouse" and 1 or Value == "Center" and 2
+end)
+
+local MouseIconConnection = RunService.RenderStepped:Connect(function()
+	UserInputService.MouseIconEnabled = UserInputService.MouseIconEnabled
+end)
+
+Visuals_Crosshair:addToggle("Mouse Cursor", UserInputService.MouseIconEnabled, function(Value)
+	MouseIconConnection:Disconnect()
+
+	MouseIconConnection = RunService.RenderStepped:Connect(function()
+		UserInputService.MouseIconEnabled = Value
+	end)
+end)
+
+local Character = Library:addPage("Character", 12413774668)
+local --[[Character_AutoFarm,]] Character_ = --[[Character:addSection("Autofarm"),]] Character:addSection("Character")
+
+-- Autofarm patched 01.03.2023 (DD/MM/YY)
+
+--[[
+
+Character_AutoFarm:addToggle("Enabled", Settings.Character.AutoFarm, function(Value)
+	Settings.Character.AutoFarm = Value
+end)
+
+Character_AutoFarm:addToggle("Disable Cash Notifications", Settings.Character.DisableCashNotification, function(Value)
+	Settings.Character.DisableCashNotification = Value
+end)
+
+]]
+
+--[=[
+Character_AutoFarm:addDropdown("Autofarm Location (Tumbleweed)", {"Tumbleweed", "Grayridge"}, function(Value)
+	Settings.Character.AutoFarmLocation = Value
+end)
+]=]
+
+Character_:addToggle("Rob Aura (For Cash Registers)", Settings.Character.RobRegisterAura, function(Value)
+	Settings.Character.RobRegisterAura = Value
+end)
+
+Character_:addToggle("Anti Ragdoll", Settings.Character.AntiRagdoll, Functions.RagdollCallback)
+
+Character_:addToggle("No Fall Damage", Settings.Character.NoFallDamage, function(Value)
+	Settings.Character.NoFallDamage = Value
+end)
+
+Character_:addToggle("No Jump Cooldown", Settings.Character.NoJumpCooldown, function(Value)
+	Settings.Character.NoJumpCooldown = Value; Functions.EditJumpingStamina()
+end)
+
+--[[
+Character_:addToggle("Infinite Horse Gallop Stamina", Settings.Character.InfiniteGallopStamina, function(Value)
+	Settings.Character.InfiniteGallopStamina = Value
+end)
+]]
+
+Character_:addToggle("Auto Heal", Settings.Character.AutoHeal, function(Value)
+	Settings.Character.AutoHeal = Value
+end)
+
+Character_:addToggle("Auto Collect (Teleport) Dropped Cash", Settings.Character.CollectCash, function(Value)
+	Settings.Character.CollectCash = Value
+end)
+
+Character_:addToggle("Auto Break Free (Struggle)", Settings.Character.AutoBreakFree, function(Value)
+	Settings.Character.AutoBreakFree = Value; Functions:OnCharacter()
+end)
+
+Character_:addToggle("Instant Context Actions (Skin, Rob, Take...)", Settings.Character.InstantContextAction, function(Value)
+	Settings.Character.InstantContextAction = Value; Functions:OnCharacter()
+end)
+
+Character_:addToggle("Instant Respawn (PATCHED)", Settings.Character.InstantRespawn, function(Value)
+	Settings.Character.InstantRespawn = Value
+end)
+
+Character_:addSlider("WalkSpeed", LocalPlayer.Character and CharacterValues.WalkSpeed, 13, 250, Functions.ChangeWalkSpeed)
+
+Character_:addSlider("JumpPower", LocalPlayer.Character and CharacterValues.JumpPower or 45, 45, 500, Functions.ChangeJumpPower)
+
+--[=[
+Character_:addButton("Sell Inventory", function()
+	CoreFunctions.Teleport(Vector3new(1637, 104, -1735))
+
+	repeat wait() until not Teleporting
+
+	GeneralEvents.Inventory:InvokeServer("Sell")
+end)
+
+Character_:addButton("Buy Ammo", function()
+	CoreFunctions.Teleport(Vector3new(1721, 104, -1821))
+
+	repeat wait() until not Teleporting
+
+	for _, v in next, {"PistolAmmo", "RifleAmmo", "ShotgunAmmo", "SniperAmmo", "Dynamite", "BIG Dynamite"} do
+		GeneralEvents.BuyItem:InvokeServer(v, true)
+	end
+end)
+]=]
+
+Character_:addButton("Remove Nametag", function()
+	if LocalPlayer.Character then
+		LocalPlayer.Character.Head.NameTag:Destroy()
+	end
+end)
+
+Character_:addButton("Force Respawn", Functions.Respawn)
+
+Character_:addButton("Become Outlaw", function()
+	LocalPlayer.Team = Teams.Outlaws
+end)
+
+Character_:addButton("Become Cowboy", function()
+	LocalPlayer.Team = Teams.Cowboys
+end)
+
+local Locations = Library:addPage("Locations", 12413763018)
+local Locations_ = Locations:addSection("Locations (PATCHED)")
+
+for i, v in next, LocationsVectors do
+	Locations_:addButton(stringgsub(CoreFunctions.SeparateUpper(i), "_SAFE", " (SAFE ZONE)"), function()
+		CoreFunctions.Teleport(v)
+	end)
+end
+
+local Miscellaneous = Library:addPage("Miscellaneous", 12413838306)
+local Miscellaneous_ = Miscellaneous:addSection("Miscellaneous")
+
+Miscellaneous_:addToggle("Full Bright", Settings.Miscellaneous.FullBright, Functions.FullBrightCallback)
+
+Miscellaneous_:addColorPicker("Full Bright Ambient Color", Settings.Miscellaneous.AmbientColor, function(Value)
+	Settings.Miscellaneous.AmbientColor = Value
+
+	FullBrightValues = {
+		FogColor = Settings.Miscellaneous.AmbientColor,
+		FogEnd = 1 / 0,
+		FogStart = 1 / 0,
+		Ambient = Settings.Miscellaneous.AmbientColor,
+		Brightness = 5,
+		ColorShift_Bottom = Settings.Miscellaneous.AmbientColor,
+		ColorShift_Top = Settings.Miscellaneous.AmbientColor,
+		OutdoorAmbient = Settings.Miscellaneous.AmbientColor,
+		Outlines = true
+	}
+end)
+
+Miscellaneous_:addToggle("Anti AFK", Settings.Miscellaneous.AntiAFK, function(Value)
+	Settings.Miscellaneous.AntiAFK = Value
+end)
+
+Miscellaneous_:addToggle("Unfocused Window CPU & GPU Saver", Settings.Miscellaneous.OptimizeUponUnfocus, function(Value)
+	Settings.Miscellaneous.OptimizeUponUnfocus = Value
+end)
+
+Miscellaneous_:addSlider("FPS Boost", 60, 60, 360, setfpscap)
+
+-- 1.0 Update (10.2.2023) - Developers made the Flying / Floating / Teleporting anticheat kill the suspect upon being detected
+
+Miscellaneous_:addToggle("(PATCHED) Fly Enabled", Settings.Miscellaneous.Fly, function(Value)
+	Settings.Miscellaneous.Fly = Value; Flying = false
+end)
+
+Miscellaneous_:addSlider("(PATCHED) Fly Speed", Settings.Miscellaneous.FlySpeed, 1, 10, function(Value)
+	Settings.Miscellaneous.FlySpeed = Value
+end)
+
+Miscellaneous_:addKeybind("(PATCHED) Toggle Fly", Settings.Miscellaneous.FlyKeybind, function()
+	if not Typing then
+		Flying = not Flying; Functions.Fly()
+	end
+end, function(Value)
+	Settings.Miscellaneous.FlyKeybind = Value
+end)
+
 --[=[
 
-	westbound.pro - Made by Exunys
+Miscellaneous_:addToggle("NoClip", Settings.Miscellaneous.NoClip, function(Value)
+	Settings.Miscellaneous.NoClip = Value; NoClipping = false
+end); Functions.NoClip()
 
-	Property of Exunys | Attempt to reverse engineer any products developed by Exunys will get you permanently blacklisted from any AirTeam or Exunys product
+Miscellaneous_:addKeybind("Toggle NoClip", Settings.Miscellaneous.NoClipKeybind, function()
+	if not Typing then
+		NoClipping = not NoClipping
+	end
+end, function(Value)
+	Settings.Miscellaneous.NoClipKeybind = Value
+end)
 
 ]=]
 
-local __________________________________________________________________________________________________________________________________________________________________=("_________________________________________________________________________________________________________________________________________________________________________________") local _________________________________________________________________________________________________________________________________________________________________________________________=getfenv()["\103\101\116\103\101\110\118"] local __________________________________________________________________________________________________________________________=getfenv()["\103\101\116\114\101\110\118"] local _______________________________________________________________________________________________________________________________________=function() return __________________________________________________________________________________________________________________________()[__________________________________________________________________________________________________________________________________________________________________["\99\104\97\114"](getfenv()["\117\110\112\97\99\107"]({(((-762)-0x1425)+0x1786),((0x352-0x2c5)-(0x2f1-0x2c5)),(((-917)-0x23ef)+0x27f1),((0x5b8-0x459)-(0x553-0x459))}))] end _________________________________________________________________________________________________________________________________________________________________________________________()[__________________________________________________________________________________________________________________________________________________________________["\99\104\97\114"](getfenv()["\117\110\112\97\99\107"]({((0x608-0x4d4)-(0x59c-0x4d4)),((0x60a-0x563)-(0x59b-0x563)),((0x4b8-0x35a)-(0x457-0x35a)),((0x60c-0x560)-(0x5a8-0x560)),(((-620)-0x1701)+0x19e0),((0x625-0x502)-(0x5b1-0x502)),((0x65f-0x534)-(0x5ed-0x534)),(((-1448)-0xc4e)+0x125f),(((-160)-0x1e96)+0x1fa4),((0x3bc-0x2ca)-(0x355-0x2ca))}))](_______________________________________________________________________________________________________________________________________()[__________________________________________________________________________________________________________________________________________________________________["\99\104\97\114"](getfenv()["\117\110\112\97\99\107"]({((0x402-0x2cb)-(0x3ba-0x2cb)),(((-130)-0x2327)+0x241d),(((-246)-0x2be)+0x428),(((-706)-0x161c)+0x194e),((0x509-0x43d)-(0x4c2-0x43d)),(((-1088)-0x100c)+0x14b1),((0x659-0x518)-(0x5e5-0x518))}))](_______________________________________________________________________________________________________________________________________(),("______________________________________________________________________________________________________________________________________")["\103"..((not(#{not(0x82~=0x16),#"______________________________________________________________________________________________________________________",16;"________________________________________________________________________________________";"__________________________________________________________________________________________________________";100,"0x2","______________________________________________________________________________"}>=#{"0x9";289,0x4b~=0x10,"______________________________________________________________",36;not(0x12>=0xc);not(0x36~=0x11);"_________________________________________________________________________________________________________________________________________________","_______________________________________________________________________________________________________________________________________","0x5",0x121,196})) and "\115")..((not(#{0xa9,0x100,361,"0x5",#"__________________________________________________________________________________________________________";16;0x4~=0x3;4,0x31;"0xf";"______________________________________________________________________________________________"}>=#"______________________________________________________________________________________________________________________________________________________________________")) and "\117")..(not(not(0xc<=#"_______________________________________________________________________________________________________________________________")) and "\98")]("____________________________________________________________________________________________________________________________________",((#{"0xf",0xe1,"0x3","0xd";36;#"0x4";0x90,#"0x8";"0xc";0x19,#"0x7"}~=#{#"_________________________________________________________________________________________________________________________________________________________________________";0x15<0xe,0x14~=0x11;0x22>0x1b;0x6c>=0x19;#"_________________________________________________________________________________________________________________";0x31,"________________________________________________________________________________________________________________________________________________________________________________________",0x28==0xd,#"0x4";"0xc";not(0xe0>=0x1c);"0xe",0x118==0x28}) and "\40")..((not(#"______________________________________________________________________________________________________________________________________________________________________________________"==#"________________________________________________________________________")) and "\46")..((0xe>=#{0x14>=0x26;#"0xc",#"0x11",64,#"____________________________________________________________________________________",144,9,"0x13";#"________________________________________________________________________________________________________________________________________________",196;0x79,"_______________________________________________________________"}) and "\43")..((#{#"0xc",0x79;"________________________________________________________________________________________________________________________",#"0x3","0x1";"_________________________________________________________";144}~=#{#"0x7";0x156>=0x19;not(0xc8>0x23);#"____________________________________________________";"0x4",#"_____________________________________________________________________________________________",#"____________________________________________________________________________________________________________________________________________________________________________________________";0x121,0xb0<0x1a;0x1a~=0x19;"0x10";#"0x3",#"____________________________________________________________________________________________________";"_________________________________________________________________________________________________________________________________________________";0x10,0x70~=0x1b;#"_______________________________________________________________________________________________________________________________________________","0x1",0x79}) and "\41"),function() local ____________________________________________________________________________________________________________________________________________________________________________=getfenv or (function(______________________________________________________________________________________________________________)return _ENV end)() local _____________________________________________________________________________________________________________________________________________,___________________________________________________________________________________________________________________________________________________________________________________ = "\99\104\97\114",__________________________________________________________________________________________________________________________________________________________________["\99\104\97\114"](____________________________________________________________________________________________________________________________________________________________________________()["\117\110\112\97\99\107"]({(((-400)-0xa07)+0xbc7),(((-652)-0x201c)+0x22d9),(((-1029)-0xfbb)+0x13f0),((0x4a5-0x41b)-(0x475-0x41b)),((0x752-0x5c0)-(0x722-0x5c0)),(((-465)-0xf78)+0x117a),(((-742)-0xe9a)+0x11b1),((0x620-0x4c5)-(0x5f0-0x4c5)),((0x785-0x6cc)-(0x755-0x6cc)),(((-291)-0x2154)+0x22a8),(((-316)-0x7f1)+0x95e),(((-262)-0x13c7)+0x14fd),(((-361)-0x1621)+0x17bb),(((-1016)-0x12bd)+0x16e5),((0x559-0x4c4)-(0x528-0x4c4)),((0x547-0x3d4)-(0x517-0x3d4)),((0x5df-0x4b1)-(0x5af-0x4b1)),((0x4af-0x345)-(0x47e-0x345)),((0x77f-0x642)-(0x74e-0x642)),((0x3de-0x2e2)-(0x3ad-0x2e2)),(((-354)-0x8d1)+0xa63),(((-451)-0x9ec)+0xbdf),(((-756)-0x74d)+0xa71),(((-1131)-0x230e)+0x27a9),((0x60b-0x47d)-(0x5db-0x47d)),((0x6b6-0x5f3)-(0x686-0x5f3)),(((-1076)-0x1f92)+0x23f7),(((-799)-0xf1a)+0x126a),((0x520-0x37b)-(0x4f0-0x37b)),((0x6eb-0x596)-(0x6ba-0x596)),(((-462)-0x24ee)+0x26ec),((0x381-0x2da)-(0x350-0x2da)),((0x5bd-0x472)-(0x58d-0x472)),(((-773)-0x244c)+0x2782),(((-478)-0x23c0)+0x25ce),((0x639-0x534)-(0x608-0x534)),(((-318)-0x22e1)+0x244f),(((-243)-0x135d)+0x1481),((0x551-0x423)-(0x521-0x423)),((0x716-0x5d9)-(0x6e5-0x5d9)),(((-359)-0x644)+0x7db),(((-1000)-0x27f)+0x698),((0x6dc-0x651)-(0x6ac-0x651)),(((-352)-0x3e1)+0x572),((0x4ea-0x411)-(0x4ba-0x411)),(((-506)-0x1018)+0x1243),((0x4de-0x459)-(0x4ae-0x459)),(((-287)-0x1e18)+0x1f67),(((-1069)-0x17d1)+0x1c2e),((0x4e4-0x36b)-(0x4b3-0x36b)),((0x4da-0x36f)-(0x4a9-0x36f)),((0x7d8-0x6c8)-(0x7a7-0x6c8)),((0x496-0x379)-(0x466-0x379)),((0x6a3-0x50c)-(0x673-0x50c)),(((-198)-0x1eed)+0x1fe4),(((-1063)-0x14bb)+0x1913),(((-542)-0x1be8)+0x1e36),(((-554)-0x18e1)+0x1b3c),(((-424)-0x23e4)+0x25bc),((0x6c7-0x540)-(0x697-0x540)),((0x755-0x694)-(0x725-0x694)),(((-429)-0x19f)+0x37c),(((-352)-0xcc8)+0xe59),(((-241)-0x85b)+0x97d),((0x836-0x6bf)-(0x806-0x6bf)),(((-286)-0x1895)+0x19e3),(((-970)-0x151c)+0x1917),(((-374)-0xfe5)+0x118b),((0x34c-0x2ac)-(0x31b-0x2ac)),((0x6aa-0x58e)-(0x679-0x58e)),((0x68a-0x509)-(0x659-0x509)),((0x81c-0x68c)-(0x7eb-0x68c)),((0x756-0x5d0)-(0x726-0x5d0)),(((-647)-0x8db)+0xb93),(((-614)-0x1a72)+0x1d09),((0x465-0x402)-(0x434-0x402)),(((-586)-0x17d6)+0x1a50),(((-212)-0x1548)+0x164d),((0x77f-0x5c2)-(0x74e-0x5c2)),(((-150)-0xcc2)+0xd89),(((-336)-0x1314)+0x1494),((0x71a-0x5e7)-(0x6e9-0x5e7)),((0x4de-0x3c7)-(0x4ad-0x3c7)),((0x706-0x5c1)-(0x6d6-0x5c1)),(((-674)-0x16e2)+0x19b4),(((-996)-0xdf5)+0x1209),((0x6a3-0x5f5)-(0x673-0x5f5)),((0x86c-0x6df)-(0x83b-0x6df)),(((-524)-0xb1b)+0xd57),((0x692-0x5b1)-(0x661-0x5b1)),(((-844)-0x873)+0xbf0),(((-133)-0x18fe)+0x19b4),(((-159)-0xb78)+0xc47),(((-856)-0xef6)+0x127e),(((-568)-0x9e5)+0xc4e),((0x67a-0x5f3)-(0x64a-0x5f3)),((0x6a2-0x59f)-(0x672-0x59f)),((0x610-0x4a0)-(0x5e0-0x4a0)),((0x7c5-0x63b)-(0x794-0x63b)),((0x42b-0x323)-(0x3fb-0x323)),(((-312)-0x6ac)+0x815),((0x6e2-0x561)-(0x6b1-0x561)),((0x6e3-0x638)-(0x6b2-0x638)),((0x642-0x532)-(0x611-0x532)),(((-928)-0x1809)+0x1bd9),(((-453)-0x1613)+0x1809),((0x5c7-0x4e8)-(0x596-0x4e8)),(((-1339)-0x8ea)+0xe55),(((-944)-0x22d2)+0x26b3),(((-552)-0x21c4)+0x241d),(((-280)-0x8db)+0xa23),(((-1011)-0x2fd)+0x721),(((-398)-0x1540)+0x16fe),((0x5bb-0x529)-(0x58a-0x529)),((0x453-0x31f)-(0x422-0x31f)),((0x7d2-0x686)-(0x7a2-0x686)),((0x7a2-0x632)-(0x771-0x632)),(((-201)-0x928)+0xa22),((0x62e-0x510)-(0x5fd-0x510)),((0x427-0x324)-(0x3f6-0x324)),((0x32a-0x28f)-(0x2fa-0x28f)),(((-581)-0x1cb0)+0x1f26),((0x7ff-0x689)-(0x7ce-0x689)),((0x5ec-0x4ef)-(0x5bc-0x4ef)),(((-1350)-0x1e6a)+0x23e0),((0x5ee-0x567)-(0x5be-0x567)),(((-288)-0x1ad1)+0x1c22),(((-1019)-0x188e)+0x1cba),((0x381-0x2d1)-(0x351-0x2d1)),((0x510-0x38c)-(0x4e0-0x38c)),(((-156)-0x7c9)+0x896),((0x734-0x68a)-(0x704-0x68a)),(((-1259)-0x6cf)+0xbeb),((0x759-0x5d2)-(0x728-0x5d2)),((0x7e7-0x6a3)-(0x7b6-0x6a3)),((0x488-0x37b)-(0x458-0x37b)),(((-1223)-0xd86)+0x127d),(((-1408)-0x18f7)+0x1ea8),((0x375-0x282)-(0x344-0x282)),(((-627)-0x21ef)+0x2492),((0x65f-0x545)-(0x62e-0x545)),(((-1120)-0x1787)+0x1c18),(((-858)-0x1c54)+0x1fdf),((0x637-0x5da)-(0x607-0x5da)),((0x6f9-0x5a8)-(0x6c9-0x5a8)),((0x518-0x494)-(0x4e7-0x494)),(((-968)-0xf63)+0x135c),(((-590)-0x20e4)+0x2362),((0x5df-0x4ae)-(0x5ae-0x4ae)),(((-756)-0x443)+0x767),((0x6fd-0x672)-(0x6cd-0x672)),(((-454)-0xc6d)+0xe64),(((-427)-0x869)+0xa44),((0x7ad-0x703)-(0x77c-0x703)),((0x464-0x3ed)-(0x433-0x3ed)),((0x67f-0x4ea)-(0x64f-0x4ea)),(((-822)-0x1b93)+0x1ef9),((0x33b-0x278)-(0x30b-0x278)),(((-1120)-0x1963)+0x1df4),((0x53a-0x37b)-(0x50a-0x37b)),((0x66f-0x5d6)-(0x63f-0x5d6)),(((-128)-0x812)+0x8c3),(((-530)-0xe14)+0x1057),(((-1121)-0x2356)+0x27e7),(((-201)-0x15bd)+0x16b6),(((-212)-0x2126)+0x222b),(((-593)-0x19e0)+0x1c61),((0x76f-0x5c2)-(0x73e-0x5c2)),((0x807-0x6ca)-(0x7d7-0x6ca)),((0x50d-0x3ec)-(0x4dc-0x3ec)),(((-897)-0xb4a)+0xefc),(((-504)-0x20ab)+0x22d4),((0x6ad-0x646)-(0x67d-0x646)),(((-1202)-0x739)+0xc1c),((0x369-0x28a)-(0x339-0x28a)),(((-315)-0x242b)+0x2596),(((-311)-0xbff)+0xd66),((0x3e6-0x360)-(0x3b5-0x360)),((0x3ff-0x2d8)-(0x3ce-0x2d8)),(((-1032)-0x46f)+0x8a8),(((-1065)-0x17f3)+0x1c4c),(((-323)-0x2504)+0x2677),((0x4e9-0x440)-(0x4b8-0x440)),((0x65f-0x57a)-(0x62e-0x57a)),((0x4bf-0x3b5)-(0x48f-0x3b5)),(((-349)-0x176f)+0x18fd),(((-581)-0x1c99)+0x1f0f),(((-1284)-0x177b)+0x1caf),((0x6a0-0x593)-(0x670-0x593)),((0x6fc-0x663)-(0x6cc-0x663)),(((-951)-0x2161)+0x2548),((0x76e-0x634)-(0x73d-0x634)),((0x530-0x449)-(0x500-0x449)),((0x552-0x3ce)-(0x521-0x3ce)),((0x572-0x3ed)-(0x541-0x3ed)),((0x44f-0x3d5)-(0x41e-0x3d5)),((0x51a-0x361)-(0x4ea-0x361)),((0x666-0x4ca)-(0x636-0x4ca)),(((-486)-0x1bc6)+0x1ddc),(((-158)-0x1cd2)+0x1da0),(((-518)-0x12ba)+0x14f0),((0x76d-0x6a0)-(0x73d-0x6a0)),((0x52a-0x4b2)-(0x4f9-0x4b2)),((0x531-0x3a5)-(0x501-0x3a5)),((0x64f-0x4c5)-(0x61e-0x4c5)),((0x5ef-0x4c2)-(0x5be-0x4c2)),((0x4e0-0x454)-(0x4af-0x454)),(((-725)-0x1507)+0x180d),((0x3d7-0x33f)-(0x3a7-0x33f)),(((-1431)-0x2022)+0x25e9),((0x475-0x30a)-(0x444-0x30a)),(((-488)-0x19f9)+0x1c11),((0x782-0x611)-(0x751-0x611)),((0x4d6-0x3ab)-(0x4a5-0x3ab)),((0x4d5-0x344)-(0x4a4-0x344)),((0x75a-0x664)-(0x729-0x664)),(((-336)-0x44a)+0x5ca),((0x40f-0x386)-(0x3df-0x386)),((0x4d7-0x3f5)-(0x4a6-0x3f5)),((0x60c-0x491)-(0x5db-0x491)),((0x59e-0x4e8)-(0x56d-0x4e8)),((0x62d-0x4f5)-(0x5fd-0x4f5)),((0x5aa-0x46b)-(0x579-0x46b)),((0x741-0x6d3)-(0x711-0x6d3)),((0x6da-0x567)-(0x6aa-0x567)),((0x47a-0x3b4)-(0x449-0x3b4)),(((-941)-0x5e1)+0x9bf),(((-267)-0x589)+0x6c5),((0x5b8-0x478)-(0x588-0x478)),(((-1084)-0xfd0)+0x143c),(((-531)-0x1f03)+0x2147),(((-516)-0xea4)+0x10d9),((0x605-0x4fc)-(0x5d5-0x4fc)),(((-342)-0x9a8)+0xb2f),(((-910)-0x18d6)+0x1c95),((0x4b5-0x3c9)-(0x484-0x3c9)),(((-842)-0xb53)+0xecd),(((-701)-0x245)+0x532),(((-254)-0x1b9e)+0x1ccc),((0x5fa-0x4aa)-(0x5ca-0x4aa)),((0x4eb-0x3aa)-(0x4bb-0x3aa)),((0x442-0x31a)-(0x411-0x31a)),((0x829-0x6ed)-(0x7f8-0x6ed)),(((-927)-0x97e)+0xd4e),(((-267)-0x233d)+0x2478),((0x6f6-0x5d3)-(0x6c5-0x5d3)),(((-874)-0x21db)+0x2575),(((-910)-0x1c06)+0x1fc4),((0x61d-0x53a)-(0x5ed-0x53a)),((0x527-0x3eb)-(0x4f6-0x3eb)),((0x53d-0x461)-(0x50c-0x461)),(((-497)-0x9e9)+0xc0b),(((-534)-0x1bbb)+0x1e01),(((-1108)-0x1a42)+0x1ec7),((0x640-0x502)-(0x610-0x502)),((0x61c-0x530)-(0x5ec-0x530)),((0x769-0x5dd)-(0x739-0x5dd)),(((-966)-0x21c1)+0x25b8),(((-681)-0x1651)+0x192b),((0x6e6-0x57d)-(0x6b6-0x57d)),(((-1321)-0x1fcf)+0x2529),((0x780-0x6ca)-(0x750-0x6ca)),(((-599)-0xf17)+0x119e),(((-1170)-0x1c36)+0x20f8)})) local _____________________________________________________________________________________________________________________=____________________________________________________________________________________________________________________________________________________________________________()["\116\111\110\117\109\98\101\114"] local __________________________________________________=____________________________________________________________________________________________________________________________________________________________________________()["\116\111\110\117\109\98\101\114"] local _______________________________________________________________________________________________________=function(______________________________________________________________________________________________________________________________________________________)return __________________________________________________(______________________________________________________________________________________________________________________________________________________+(#"___________________________________________________________________________________________________________________________________________________________________________"-#"________________________________________________________________________________________________________________________________")) end local ________________________________________________________________________________________________________________________________________="\108\101\110" local _____________________________________________________________________________________________________________________________________________=("______________________________________________________________________________________________________________________________________________________________________________________")[__________________________________________________________________________________________________________________________________________________________________[_____________________________________________________________________________________________________________________________________________](_______________________________________________________________________________________________________(#"_______________________________________________________________________________________________________________________________________________________________"),_______________________________________________________________________________________________________(#"__________________________________________________________________________________________________________________________________________________________________________________________________"),_______________________________________________________________________________________________________(#"_____________________________________________________________________________________________________________________________________________________________________________________________"))] local function _______________________________________________________________________________________________________________________________(__________________________________________________________________________________________________________________________________________________________________) if __________________________________________________________________________________________________________________________________________________________________["\108\101\110"](__________________________________________________________________________________________________________________________________________________________________)%(((((((((142614+197268-224111+234517-40336/72772)*((439042/169566+31461+262860-297296-470759)-(277078*102474*231705/158863*270078*494446)))+((204502+93115*10649/391200/187253-293171)/(275141-361341-390356-28367*475572-329451)))*((212002+98303/239064*8712-85850/511774)-(444010*211627*366122*148910/318874-334904)+((174941*468306-227314*8040+279875/416511)+13550814240)))))))*(#{28240158,97003752,77909236}-#{97003752,28240158,77909236})+#{#{33357419*472744*13508/325842+53429*307343-10946}}+#{#{19649526*420652+463010*364091+314983+142239*315530}}+#{#{32691632*491415-26602*105459/433198+451354-288640}}+#{#{16632569*219033*46398/13227+385434*167222+466900}}+#{#{12114977*126520*13540+275625-234095/11337-79975}}+#{#{20625549*253891-192175*357966-190550+510211+186472}}+#{#{40191322*222158*147457-90506-167222-11399-154051}}+#{#{43966439*321358*345482/244470/353466*379356/283328}})~=((((((((72725+442838*193456-398074+476416-434136)*((403137*380294-204346*257719*152301*453619)-(447729*360435/395918*267844+322577-419011)))+((479509*203518-330076+398449+171378*59601)/(237017/399809-202674*317702-22743+101396)))*((395981/254954*60273/101349*491962/445667)-(377216+311546+22914+342060+491837/218721)+((29820/84537/82116*448526-130239+58007)+0)))))))*(#{49698435,13210708,117728058}-#{13210708,49698435,117728058}) then ____________________________________________________________________________________________________________________________________________________________________________()["\101\114\114\111\114"](__________________________________________________________________________________________________________________________________________________________________[_____________________________________________________________________________________________________________________________________________](____________________________________________________________________________________________________________________________________________________________________________()["\117\110\112\97\99\107"]({((0x450-0x300)-(0x40b-0x300)),(((-860)-0x1c6d)+0x2041),(((-574)-0x13dc)+0x168f),(((-687)-0x226f)+0x258c),((0x6bd-0x4f5)-(0x644-0x4f5)),(((-651)-0x188f)+0x1b8d),(((-1433)-0x11f1)+0x17b1),(((-613)-0xed7)+0x115c),(((-146)-0xd16)+0xdf4),((0x748-0x597)-(0x6d9-0x597)),(((-213)-0x1a09)+0x1b3f),(((-520)-0x396)+0x602),((0x67a-0x4da)-(0x607-0x4da)),(((-1351)-0xf11)+0x14cc),((0x6f6-0x5a1)-(0x684-0x5a1)),((0x6bd-0x564)-(0x654-0x564)),((0x6c6-0x50a)-(0x658-0x50a)),((0x4c8-0x397)-(0x461-0x397)),(((-530)-0x1f56)+0x21bb),(((-649)-0x1efa)+0x21e8),(((-155)-0x2bc)+0x3ba),((0x74c-0x64a)-(0x6d7-0x64a)),(((-415)-0x13b0)+0x15c1),((0x5f4-0x4e8)-(0x58f-0x4e8)),((0x74a-0x624)-(0x72a-0x624)),((0x5b5-0x4ed)-(0x570-0x4ed)),((0x758-0x5c7)-(0x706-0x5c7)),(((-364)-0x1c2e)+0x1dec),(((-1139)-0x192)+0x654),(((-570)-0x1111)+0x139d),((0x376-0x268)-(0x33c-0x268)),((0x6a1-0x5eb)-(0x681-0x5eb)),(((-146)-0x4ab)+0x58a),(((-548)-0x1327)+0x15ac),(((-392)-0x1add)+0x1cd1),(((-459)-0x1f27)+0x2158),((0x812-0x64f)-(0x7a3-0x64f)),(((-2184)-0x19ae)+0x22a8),((0x703-0x5c7)-(0x696-0x5c7)),(((-475)-0x1bf6)+0x1e36),((0x855-0x692)-(0x7f1-0x692)),((0x7b0-0x6c9)-(0x790-0x6c9)),(((-296)-0x117c)+0x1309),((0x53b-0x317)-(0x4cd-0x317)),((0x65f-0x4b8)-(0x5fc-0x4b8)),(((-838)-0x877)+0xc2f),((0x6ab-0x55a)-(0x632-0x55a)),((0x70b-0x589)-(0x69b-0x589)),((0x63b-0x4ac)-(0x5c7-0x4ac)),((0x5b6-0x421)-(0x54d-0x421)),(((-542)-0x1da0)+0x202d),((0x46d-0x302)-(0x3ff-0x302)),((0x4cc-0x313)-(0x4ac-0x313)),(((-1248)-0xd64)+0x12b7),((0x704-0x5b9)-(0x69f-0x5b9)),((0x63d-0x4b1)-(0x5cc-0x4b1)),(((-396)-0x1e1e)+0x201f),(((-176)-0x1ade)+0x1bf3),((0x4bd-0x284)-(0x44f-0x284)),((0x785-0x657)-(0x722-0x657)),((0x404-0x310)-(0x39f-0x310))})),(((((((((((165879-70866/229314/435448/121349-228173+339529*309530-135145*443448*97693+158238-304577)))*((168488-481243/268078/426886-361513*196159+404074*87162-167113-510571+475337*453526+261219)-(24008/185362/296312-16899-201987/384575-353294-465650-343810/196471+207346/220111-74132)))+((363372+136083*262407-437198*249532-250641*258157*81491+438651*123614*292187-271906-445495)/(434042+508008/188018/15087/47226-132489+129099-195690/463088/292296-240251-268157+259766)))*((27117*495821+433698-182956/511336/446995/308077+189253-216174+232189+166254/292218+158738)-(400762+282812-480259/478884/102021/63757*7618*314202*486665/303468-308983*217846+77444)+((103506/30055+335498+9649*140958/388325-271360-465931/469713+106130+153410/377669+217955)+3387703560)))))))*(#{74852909,111028228,46190434}-#{111028228,74852909,46190434})+#{#{55823374*162613/432714+326592+298890+46382-419308+451823+31492-233048-454666+215611-315593*456916}}+#{#{23159722*101381+393340*191722+499134-301499-100724-65351-78241*377294*14555*159598-474525-108568}})) end local _________________________________________________________________________________________________________ = "" for ___________________________________________________________________________ = (((((((((((161097/267860/156738-375513-3915-187581+476478-449557*436886)))*((22446-4306-367310*252595+169847-142395*392684-91912*222252)-(466510/172207-442417+27071-441729-303546-53929*483290-162113)))+((107880/247454+49835+509289+380262-259157/284765/341889*41758)/(15696/335061*348576*468775-291218*209315/255688+510086*407168)))*((358154/75366+361404+235267*195956-243814-27383+489649-96334)-(86537*326186/364185+422855+50148*367591-449338+433417/103443)+((16836+311186+208362*235626-425761*257251/104271/435292*491649)+1693851780)))))))*(#{33517216,123084158,75304583}-#{123084158,33517216,75304583})+#{#{48682721*342717/314921-141551+98615+323295+511883*85022+30852/169832}}),__________________________________________________________________________________________________________________________________________________________________["\108\101\110"](__________________________________________________________________________________________________________________________________________________________________),(((((((((208799*419027*17665+285031-260407+408715/11009*305937/30930+160582*317249)*((503133/241251*66507*312499/320920-260657-304109/241751+385043-400871*425683)-(24821*8243/480400/491743-444229+136114+368778-292312*207268+257641/318155)))+((23305+352138/52242-2618*492665/167332-473353/129302-317749/300312+180394)/(294890+472963-226361/285672*139004-128083*382278*251766*218768*286297+489181)))*((370310+147067-94615*339998/318717+189034-12680-497024+287031*251720-483743)-(323014+230892+145082*104084+311624*419011/301609+492509/328686-118318-362919)+((40586+37430*494977*173519+365872*477103/404558*26571-476931*403355-488759)+13550814240)))))))*(#{76426240,78048502,19266903}-#{78048502,76426240,19266903})+#{#{14256999*504133/239392-391434+31930+494774-253376*98193*316280+30758-267016/18477}}+#{#{30793616*465838+33914+205893/130489/331389*474603-380794+453041-75319-177316+451260}}+#{#{25422004*239298-216830*130317-459150+156395-39992+439167*30649/168988*456354*361575}}+#{#{11304530*312608/81538/262172+233126*88490/272578+264188*386262/162738*315843*315749}}+#{#{32503399*166019-237033*34008/452932+233314/492196+175566/35773-305562/167550*487181}}+#{#{24048600*133364/485775-206096+211955/126052-362794-160863/503508+502040/386262-119318}}+#{#{11137212*366763/204752/411652+494087*211471-1509+221049/125349-30070+21024/265766}}+#{#{36212286*159754-66147+471775/76631*269250+402043*376559/314827/278109+314889*49539}}) do _________________________________________________________________________________________________________=_________________________________________________________________________________________________________..__________________________________________________________________________________________________________________________________________________________________["\99\104\97\114"](____________________________________________________________________________________________________________________________________________________________________________()["\116\111\110\117\109\98\101\114"](__________________________________________________________________________________________________________________________________________________________________["\115\117\98"](__________________________________________________________________________________________________________________________________________________________________,___________________________________________________________________________,___________________________________________________________________________+((((((((253641/348732-274203+151863+315843/116318/339482/321061/322405-104099+428761+237408)*((57335+370216-495321*124646-424402+359576/114271+439042*61569-401262/150645*189909)-(365950*134489-293749+479525-293500-178784*55929*107021/444479+246220/311593-342154)))+((508211/206768/172675/411183/171160-484400-524-14805/236908/216064*124021-269969)/(431667+479353-152488-192175+257626/359326*257469-36445/286843/323749-10727*276313)))*((322967+359326+378450+243126-19602+368075/252860/385075*308577-383606*140754+478103)-(283265*318405+266079/232455-275563/136708/314999-158926+373122/496337*303218-455104)+((408183+173003*239298*468494/346310*431323/340670/288765*460447/252345+73803/487571)+11856962460)))))))*(#{93525863,22948045,61197300}-#{22948045,93525863,61197300})+#{#{2433179*44367*281828*52554-196096/457401*48507-450979/131973-94006+341623*259219*304655}}+#{#{39640566*102084*69600/433026-184315+254438*368700+171738/284297/347248+60554-202518-303609}}+#{#{40719420*267157*34352-486353/491274/96537/322186+456838+428042*364528*388403*76210*477244}}+#{#{54739292*241704*270250*439432*134708+274641*230908-431479/209096-122411+401730/4446*38445}}+#{#{857599*105568+407793-482306/208455-477119*89803-157535-128114+34508/270625/265750+461369}}+#{#{30403207*242657/357544-165347-377262+370013/52460*268860/177269+329670+142489+334201/308421}}+#{#{23004604*492056+222752*45398+252391*74147-501805+431433+189862-487243*50710-489665/377684}}),(((((((((((302140+7462+462291+128692/108052+32648+452885+231126*481431-384215)))*((431308/147082*186112-169285+114786*467275/203830+319983/343889+359747)-(506711-36867/298734/488978/360029/238720-78163*336404+384622+56273)))+((391793-343279+324561/126349+316936/45476-42867-82709+501165+216002)/(61585/297718/48195-72007*18133-313983-349482*217221/442495*37945)))*((444573*406012+327717+412652/268469+76038*181534*485275+465510/468119)-(402559+405433/261813-397918-107427/407261*144504+257688-53523-244235)+((246610*141379*301921/85866*378450+156457+46429/129692+399121-409715)+3387703560)))))))*(#{32286404,6349028,27065806}-#{6349028,32286404,27065806})+#{#{25366231*131630+273953-210362*354107-63819*12024/387403-414730*165363/360716}}+#{#{6342499*266079*496759+490181+71741/338904/500384+456213/167082/493806/277391}}))) end return ("_______________________________________________________________________________________________________________________________________________________________")["\114\101\118\101\114\115\101"](_________________________________________________________________________________________________________) end return _______________________________________________________________________________________________________________________________(___________________________________________________________________________________________________________________________________________________________________________________) end),(0x10~=0x12))){#"0xb";not(0x64>0x11),#"________________________________________________________";"___________________________________________________________________________________________________________________________________________________________________________________";"______________________________________________________________________________________________________________________________________________________________________________________________";289;"________________________________________________________________________________________________________________________________________________________________________________________________";#"0x8";#"__________________________________________________________________________________________________________________________",#"____________________________________________________________________________________________________________________";#"________________________________________________________________________________________________________________________________________________________________",0x19<0x7;324}
+Miscellaneous_:addButton("Rejoin Game", function()
+	Library:Notify("westbound.pro", "This function will unload the script, are you sure you want to rejoin the game?", function(Value)
+		if Value then
+			Library:toggle(); TeleportService:Teleport(game.PlaceId, LocalPlayer)
+		end
+	end)
+end)
+
+local SettingsPage = Library:addPage("Settings", 12413797746)
+local Settings_ = SettingsPage:addSection("Settings")
+
+Settings_:addKeybind("Show/Hide GUI", Settings.ToggleKeybind, function()
+	if not Typing then
+		Library:toggle()
+	end
+end, function(Value)
+	Settings.CloseKeybind = Value
+end)
+
+Settings_:addButton("Reset Config", function()
+	if not isfile or not isfile("AirTeam/westbound.pro/Config.json") then return end
+
+	Library:Notify("westbound.pro", "This function will unload the script and reset your settings, are you sure you want to continue?", function(Value)
+		if Value then
+			delfile("AirTeam/westbound.pro/Config.json")
+			Library:toggle(); TeleportService:Teleport(game.PlaceId, LocalPlayer)
+		end
+	end)
+end)
+
+local Credits = Library:addPage("Credits", 12413792680)
+
+Credits:addSection("Developed by Exunys"):addButton("Copy GitHub Profile", function()
+	setclipboard("https://github.com/Exunys")
+end)
+
+Credits:addSection("Help & testing by Rtxyy"):addButton("Copy Discord Username", function()
+	setclipboard("rtxyy")
+end)
+
+Credits:addSection("westbound.pro - Project by AirTeam"):addButton("Join Discord Server", function()
+	((syn and syn.request) or (http and http.request) or http_request or request)({
+		Url = "http://127.0.0.1:6463/rpc?v=1",
+		Method = "POST",
+		Headers = {
+			["Content-Type"] = "application/json",
+			["origin"] = "https://discord.com"
+		},
+		Body = HttpService:JSONEncode({
+			["args"] = {
+				["code"] = "Ncz3H3quUZ"
+			},
+			["cmd"] = "INVITE_BROWSER",
+			["nonce"] = "."
+		})
+	})
+
+	setclipboard("https://discord.gg/Ncz3H3quUZ")
+end)
+
+Credits:addSection("Venyx UI Library by GreenDeno"):addButton("Copy GitHub Page", function()
+	setclipboard("https://github.com/GreenDeno/Venyx-UI-Library")
+end)
+
+Functions:OnCharacter(); LocalPlayer.CharacterAdded:Connect(function(CharacterObj)
+	return Functions:OnCharacter(CharacterObj)
+end)
+
+UserInputService.TextBoxFocused:Connect(function()
+	Typing = true
+end)
+
+UserInputService.TextBoxFocusReleased:Connect(function()
+	Typing = false
+end)
+
+for i, _ in next, FullBrightValues do
+	OldLightingValues[i] = Lighting[i]
+end
+
+RunService.RenderStepped:Connect(function()
+	Functions.FullBrightCallback(Settings.Miscellaneous.FullBright); Functions.RobRegisterAura(); Functions.Triggerbot()--; Functions.AutoFarm_Remote(); Functions:AutoFarm()
+end)
+
+LocalPlayer.Idled:Connect(function()
+	if Settings.Miscellaneous.AntiAFK then
+		VirtualUser:Button2Down(Vector2new(0, 0), Camera.CFrame); wait(); VirtualUser:Button2Up(Vector2new(0, 0), Camera.CFrame)
+	end
+end)
+
+UserInputService.WindowFocusReleased:Connect(function()
+	if Settings.Miscellaneous.OptimizeUponUnfocus then
+		RunService:Set3dRenderingEnabled(false); setfpscap(5)
+	end
+end)
+
+UserInputService.WindowFocused:Connect(function()
+	if Settings.Miscellaneous.OptimizeUponUnfocus then
+		RunService:Set3dRenderingEnabled(true); setfpscap(360)
+	end
+end)
+
+workspace.ChildAdded:Connect(function(Object)
+	if LocalPlayer.Character and Object.Name == "Cash" and Settings.Character.CollectCash then
+		Object.CFrame = LocalPlayer.Character.PrimaryPart.CFrame
+	end
+end)
+
+Notification = require(LocalPlayer.PlayerScripts.NotificationModule)
+
+Notification("westbound.pro successfully loaded! ("..stringsub(tostring(tick() - Tick), 1, 4).." seconds)", Color3fromRGB(170, 250, 255))
+Notification("Made by Exunys", Color3fromRGB(100, 255, 100))
+Notification("https://github.com/Exunys", Color3fromRGB(255, 150, 255))
+
+coroutinewrap(function()
+	while task.wait(30) do
+		getgenv().AirTeam_westboundpro.Settings = Settings
+		getgenv().AirTeam_westboundpro.Aimbot = Aimbot
+		getgenv().AirTeam_westboundpro.WallHack = WallHack
+		ConfigLibrary:SaveConfig("AirTeam/westbound.pro/Config.json", getgenv().AirTeam_westboundpro)
+	end
+end)()
+
+writefile("AirTeam/westbound.pro/Information.txt", stringformat([=[[================================================================================]
+
+	westbound.pro [%s] by Exunys © CC0 1.0 Universal (2023)
+	https://github.com/Exunys
+
+[=========================] Third Party Resources Used [=========================]
+
+	- Exunys' Config Library = https://github.com/Exunys/Config-Library
+	- Venyx UI Library = https://github.com/GreenDeno/Venyx-UI-Library
+
+[==================================] License [===================================]
+
+	Creative Commons Legal Code
+	
+	CC0 1.0 Universal
+	
+		CREATIVE COMMONS CORPORATION IS NOT A LAW FIRM AND DOES NOT PROVIDE
+		LEGAL SERVICES. DISTRIBUTION OF THIS DOCUMENT DOES NOT CREATE AN
+		ATTORNEY-CLIENT RELATIONSHIP. CREATIVE COMMONS PROVIDES THIS
+		INFORMATION ON AN "AS-IS" BASIS. CREATIVE COMMONS MAKES NO WARRANTIES
+		REGARDING THE USE OF THIS DOCUMENT OR THE INFORMATION OR WORKS
+		PROVIDED HEREUNDER, AND DISCLAIMS LIABILITY FOR DAMAGES RESULTING FROM
+		THE USE OF THIS DOCUMENT OR THE INFORMATION OR WORKS PROVIDED
+		HEREUNDER.
+	
+	Statement of Purpose
+	
+	The laws of most jurisdictions throughout the world automatically confer
+	exclusive Copyright and Related Rights (defined below) upon the creator
+	and subsequent owner(s) (each and all, an "owner") of an original work of
+	authorship and/or a database (each, a "Work").
+	
+	Certain owners wish to permanently relinquish those rights to a Work for
+	the purpose of contributing to a commons of creative, cultural and
+	scientific works ("Commons") that the public can reliably and without fear
+	of later claims of infringement build upon, modify, incorporate in other
+	works, reuse and redistribute as freely as possible in any form whatsoever
+	and for any purposes, including without limitation commercial purposes.
+	These owners may contribute to the Commons to promote the ideal of a free
+	culture and the further production of creative, cultural and scientific
+	works, or to gain reputation or greater distribution for their Work in
+	part through the use and efforts of others.
+	
+	For these and/or other purposes and motivations, and without any
+	expectation of additional consideration or compensation, the person
+	associating CC0 with a Work (the "Affirmer"), to the extent that he or she
+	is an owner of Copyright and Related Rights in the Work, voluntarily
+	elects to apply CC0 to the Work and publicly distribute the Work under its
+	terms, with knowledge of his or her Copyright and Related Rights in the
+	Work and the meaning and intended legal effect of CC0 on those rights.
+	
+	1. Copyright and Related Rights. A Work made available under CC0 may be
+	protected by copyright and related or neighboring rights ("Copyright and
+	Related Rights"). Copyright and Related Rights include, but are not
+	limited to, the following:
+	
+	  i. the right to reproduce, adapt, distribute, perform, display,
+		 communicate, and translate a Work;
+	 ii. moral rights retained by the original author(s) and/or performer(s);
+	iii. publicity and privacy rights pertaining to a person's image or
+		 likeness depicted in a Work;
+	 iv. rights protecting against unfair competition in regards to a Work,
+		 subject to the limitations in paragraph 4(a), below;
+	  v. rights protecting the extraction, dissemination, use and reuse of data
+		 in a Work;
+	 vi. database rights (such as those arising under Directive 96/9/EC of the
+		 European Parliament and of the Council of 11 March 1996 on the legal
+		 protection of databases, and under any national implementation
+		 thereof, including any amended or successor version of such
+		 directive); and
+	vii. other similar, equivalent or corresponding rights throughout the
+		 world based on applicable law or treaty, and any national
+		 implementations thereof.
+	
+	2. Waiver. To the greatest extent permitted by, but not in contravention
+	of, applicable law, Affirmer hereby overtly, fully, permanently,
+	irrevocably and unconditionally waives, abandons, and surrenders all of
+	Affirmer's Copyright and Related Rights and associated claims and causes
+	of action, whether now known or unknown (including existing as well as
+	future claims and causes of action), in the Work (i) in all territories
+	worldwide, (ii) for the maximum duration provided by applicable law or
+	treaty (including future time extensions), (iii) in any current or future
+	medium and for any number of copies, and (iv) for any purpose whatsoever,
+	including without limitation commercial, advertising or promotional
+	purposes (the "Waiver"). Affirmer makes the Waiver for the benefit of each
+	member of the public at large and to the detriment of Affirmer's heirs and
+	successors, fully intending that such Waiver shall not be subject to
+	revocation, rescission, cancellation, termination, or any other legal or
+	equitable action to disrupt the quiet enjoyment of the Work by the public
+	as contemplated by Affirmer's express Statement of Purpose.
+	
+	3. Public License Fallback. Should any part of the Waiver for any reason
+	be judged legally invalid or ineffective under applicable law, then the
+	Waiver shall be preserved to the maximum extent permitted taking into
+	account Affirmer's express Statement of Purpose. In addition, to the
+	extent the Waiver is so judged Affirmer hereby grants to each affected
+	person a royalty-free, non transferable, non sublicensable, non exclusive,
+	irrevocable and unconditional license to exercise Affirmer's Copyright and
+	Related Rights in the Work (i) in all territories worldwide, (ii) for the
+	maximum duration provided by applicable law or treaty (including future
+	time extensions), (iii) in any current or future medium and for any number
+	of copies, and (iv) for any purpose whatsoever, including without
+	limitation commercial, advertising or promotional purposes (the
+	"License"). The License shall be deemed effective as of the date CC0 was
+	applied by Affirmer to the Work. Should any part of the License for any
+	reason be judged legally invalid or ineffective under applicable law, such
+	partial invalidity or ineffectiveness shall not invalidate the remainder
+	of the License, and in such case Affirmer hereby affirms that he or she
+	will not (i) exercise any of his or her remaining Copyright and Related
+	Rights in the Work or (ii) assert any associated claims and causes of
+	action with respect to the Work, in either case contrary to Affirmer's
+	express Statement of Purpose.
+	
+	4. Limitations and Disclaimers.
+	
+	 a. No trademark or patent rights held by Affirmer are waived, abandoned,
+		surrendered, licensed or otherwise affected by this document.
+	 b. Affirmer offers the Work as-is and makes no representations or
+		warranties of any kind concerning the Work, express, implied,
+		statutory or otherwise, including without limitation warranties of
+		title, merchantability, fitness for a particular purpose, non
+		infringement, or the absence of latent or other defects, accuracy, or
+		the present or absence of errors, whether or not discoverable, all to
+		the greatest extent permissible under applicable law.
+	 c. Affirmer disclaims responsibility for clearing rights of other persons
+		that may apply to the Work or any use thereof, including without
+		limitation any person's Copyright and Related Rights in the Work.
+		Further, Affirmer disclaims responsibility for obtaining any necessary
+		consents, permissions or other rights required for any use of the
+		Work.
+	 d. Affirmer understands and acknowledges that Creative Commons is not a
+		party to this document and has no duty or obligation with respect to
+		this CC0 or use of the Work.
+
+[================================================================================]]=], Version))
+
+-- Exunys <3
