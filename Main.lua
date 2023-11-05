@@ -238,7 +238,7 @@ local CharacterValues, LocationsVectors, FullBrightValues, OldLightingValues, Te
 	FortArthur = Vector3new(-65, 72, 1267),
 	FortCassidy_SAFE = Vector3new(-1239, 160, -571),
 	RedRocksCamp_SAFE = Vector3new(1862, 104, -1827)
-}, {}, {}, false, false, false, false, false, false, false, "V1.6.5", 100
+}, {}, {}, false, false, false, false, false, false, false, "V1.6.6", 100
 
 local Parts, Fonts, TracersType = {"Random", "Head", "HumanoidRootPart", "LeftHand", "RightHand", "LeftLowerArm", "RightLowerArm", "LeftUpperArm", "RightUpperArm", "LeftFoot", "LeftLowerLeg", "UpperTorso", "LeftUpperLeg", "RightFoot", "RightLowerLeg", "LowerTorso", "RightUpperLeg"}, {"UI", "System", "Plex", "Monospace"}, {"Bottom", "Center", "Mouse"}
 local Mouse, RagdollScript, GeneralEvents, RagdollFunction, OldRecoilFunction, Notification = LocalPlayer:GetMouse(), require(ReplicatedStorage.SharedModules.Ragdoll), ReplicatedStorage.GeneralEvents
